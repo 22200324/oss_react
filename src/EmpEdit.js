@@ -3,49 +3,49 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 const EmpEdit = () => {
   const { empid } = useParams();
-  //const [empdata, setEmpdata] = useState({});
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetch("http://localhost:8000/employee/" + empid)
-      .then((res) => {
-        return res.json();
-      })
-      .then((resp) => {
-        setId(resp.id);
-        setName(resp.name);
-        setEmail(resp.email);
-        setPhone(resp.phone);
-        setActive(resp.active);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }, []);
+  // 기존 필드 + 추가 필드 2개
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [department, setDepartment] = useState("");   // NEW
+  const [role, setRole] = useState("");               // NEW
   const [active, setActive] = useState(true);
   const [validation, setValidation] = useState(false);
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("http://localhost:8000/employee/" + empid)
+      .then((res) => res.json())
+      .then((resp) => {
+        setId(resp.id);
+        setName(resp.name || "");
+        setEmail(resp.email || "");
+        setPhone(resp.phone || "");
+        setDepartment(resp.department || "");  // NEW
+        setRole(resp.role || "");              // NEW
+        setActive(!!resp.active);
+      })
+      .catch((err) => console.log(err.message));
+  }, [empid]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const empdata = { id, name, email, phone, active };
+    const empdata = { id, name, email, phone, department, role, active }; // NEW 포함
 
     fetch("http://localhost:8000/employee/" + empid, {
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(empdata),
     })
-      .then((res) => {
+      .then(() => {
         alert("Saved successfully.");
         navigate("/");
       })
-      .catch((err) => {
-        console.log(err.message);
-      });
+      .catch((err) => console.log(err.message));
   };
+
   return (
     <div>
       <div className="row">
@@ -60,28 +60,26 @@ const EmpEdit = () => {
                   <div className="col-lg-12">
                     <div className="form-group">
                       <label>ID</label>
-                      <input
-                        value={id}
-                        disabled="disabled"
-                        className="form-control"
-                      ></input>
+                      <input value={id} disabled className="form-control" />
                     </div>
                   </div>
+
                   <div className="col-lg-12">
                     <div className="form-group">
                       <label>Name</label>
                       <input
-                        onMouseDown={(e) => setValidation(true)}
+                        onMouseDown={() => setValidation(true)}
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="form-control"
-                      ></input>
+                      />
                       {name.length === 0 && validation && (
                         <span className="text-danger">Enter the name</span>
                       )}
                     </div>
                   </div>
+
                   <div className="col-lg-12">
                     <div className="form-group">
                       <label>Email</label>
@@ -89,9 +87,10 @@ const EmpEdit = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="form-control"
-                      ></input>
+                      />
                     </div>
                   </div>
+
                   <div className="col-lg-12">
                     <div className="form-group">
                       <label>Phone</label>
@@ -99,9 +98,34 @@ const EmpEdit = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         className="form-control"
-                      ></input>
+                      />
                     </div>
                   </div>
+
+                  {/* NEW: Department */}
+                  <div className="col-lg-12">
+                    <div className="form-group">
+                      <label>Department</label>
+                      <input
+                        value={department}
+                        onChange={(e) => setDepartment(e.target.value)}
+                        className="form-control"
+                      />
+                    </div>
+                  </div>
+
+                  {/* NEW: Role */}
+                  <div className="col-lg-12">
+                    <div className="form-group">
+                      <label>Role</label>
+                      <input
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="form-control"
+                      />
+                    </div>
+                  </div>
+
                   <div className="col-lg-12">
                     <div className="form-check">
                       <input
@@ -109,10 +133,14 @@ const EmpEdit = () => {
                         onChange={(e) => setActive(e.target.checked)}
                         type="checkbox"
                         className="form-check-input"
-                      ></input>
-                      <label className="form-check-label">Is Active</label>
+                        id="isActive"
+                      />
+                      <label className="form-check-label" htmlFor="isActive">
+                        Is Active
+                      </label>
                     </div>
                   </div>
+
                   <div className="col-lg-12">
                     <div className="form-group">
                       <button className="btn btn-success" type="submit">

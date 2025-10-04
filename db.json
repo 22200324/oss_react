@@ -5,21 +5,33 @@
       "name": "plla",
       "email": "jhbljs92@naver.com",
       "phone": "01044261317",
-      "active": true
+      "active": true,
+      "department": "Engineering",
+      "role": "Frontend Developer",
+      "status": "Active",
+      "createdAt": "2025-10-04T10:00:00Z"
     },
     {
       "id": 3,
       "name": "mina",
       "email": "mina@naver.com",
       "phone": "01098765431",
-      "active": true
+      "active": true,
+      "department": "Design",
+      "role": "UI/UX Designer",
+      "status": "Active",
+      "createdAt": "2025-10-03T15:30:00Z"
     },
     {
       "id": 4,
       "name": "jimin Lee",
       "email": "jimin@naver.com",
       "phone": "01012345555",
-      "active": true
+      "active": false,
+      "department": "Product",
+      "role": "Product Manager",
+      "status": "Inactive",
+      "createdAt": "2025-10-01T08:15:00Z"
     }
   ]
 }
